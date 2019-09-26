@@ -1,0 +1,99 @@
+/* init */
+* {
+	padding: 0;
+	margin: 0;
+}
+
+ul {
+	list-style-type: none;
+}
+
+a {
+	text-decoration: none;
+}
+
+
+/* bottom */
+/* .bottom {
+	width: 100%;
+	height: 500px;
+	margin: 40px auto;
+	text-align: center;
+	background: url(../imgs/bg10.jpg);
+	background-size: 100% 100%;
+}
+
+.bot-title {
+	color: #fff;
+	margin-top: 30px;
+}
+.redcardname {
+	color: red;
+};
+
+.icon-set-sns {
+	display: inline-block;
+	width: 36px;
+	background: url(../imgs/rt.png) no-repeat left;
+	background-size: 10px 10px;
+	text-indent: 1em;
+	font-style: normal;
+}
+
+.exp-title {
+	width: 1152px;
+	height: 100px;
+	position: relative;
+	margin-top: 20px;
+}
+
+.exp-content {
+	width: 560px;
+	height: 100px;
+	border-radius: 10px;
+	overflow: hidden;
+	position: absolute;
+
+}
+
+.exp-content a {
+	display: inline-block;
+}
+
+.exp-content img {
+	width: 100%;
+	height: 100%;
+}
+
+.expleft {
+	left: 0;
+}
+
+.expright {
+	right: 0;
+}
+
+.exp-text {
+	position: absolute;
+	height: 50px;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+	color: #fff;
+}
+
+.exp-text h3 {
+	font-size: 1.5em;
+
+}
+
+.exp-text p {
+	font-size: 0.8em;
+	margin-top: 5px;
+} */
+
+
+/* OTHER */
+
