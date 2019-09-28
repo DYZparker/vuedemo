@@ -3,12 +3,15 @@ import Router from 'vue-router'
 import Login from './views/login'
 import Layout from '@/components/Layout.vue'
 import Home from './views/home'
+import Information from './views/information'
+import Achievement from './views/achievement'
 
 
 
 Vue.use(Router);
 
 export default new Router({
+    mode: 'history',
     routes: [
         {
             path: '/login',
@@ -25,6 +28,16 @@ export default new Router({
                     path: '/home',
                     component: Home,
                     mate: {title: '首页'}
+                },
+                {
+                    path: '/information',
+                    component: Information,
+                    mate: {title: '学生信息'}
+                },
+                {
+                    path: '/achievement',
+                    component: Achievement,
+                    mate: {title: '学生成绩'}
                 }
             ]
         }
