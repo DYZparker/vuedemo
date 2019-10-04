@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Login from './views/login'
+import Regist from './views/regist'
 import Layout from '@/components/Layout.vue'
 import Home from './views/home'
 import Information from './views/information'
@@ -19,6 +20,11 @@ export default new Router({
             component: Login
         },
         {
+            path: '/regist',
+            name: 'regist',
+            component: Regist
+        },
+        {
             path: '/',
             name: 'layout',
             component: Layout,
@@ -27,17 +33,26 @@ export default new Router({
                 {
                     path: '/home',
                     component: Home,
-                    mate: {title: '首页'}
+                    mate: {
+                        title: '首页',
+                        requireAuth: true
+                    }
                 },
                 {
                     path: '/information',
                     component: Information,
-                    mate: {title: '学生信息'}
+                    mate: {
+                        title: '学生信息',
+                        requireAuth: true
+                    }
                 },
                 {
                     path: '/achievement',
                     component: Achievement,
-                    mate: {title: '学生成绩'}
+                    mate: {
+                        title: '学生成绩',
+                        requireAuth: true
+                    }
                 }
             ]
         }
