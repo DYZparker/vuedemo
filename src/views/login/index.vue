@@ -1,16 +1,24 @@
 <template>
   <div class="login-container">
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="50px" class="demo-ruleForm">
-      <h2 class="login-title">学生管理系统登录</h2>
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm">
+      <h2 class="login-title">学生管理系统</h2>
       <el-form-item label="账号" prop="username">
         <el-input v-model="ruleForm.username"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input type="password" v-model="ruleForm.password"></el-input>
       </el-form-item>
-      <div class="login-button">
+      <el-form-item label="确认密码" prop="checkPass" v-if="!trigger">
+        <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item v-if="!trigger">
+        <el-button type="primary" @click="submitForm('ruleForm')">注册</el-button>
+        <el-button @click="resetForm('ruleForm')">重置</el-button>
+        <el-button @click="changeTrigger('ruleForm')">返回登录</el-button>
+      </el-form-item>
+      <div class="login-button" v-if="trigger">
         <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
-        <el-button @click="regist">注册</el-button>
+        <el-button @click="changeTrigger('ruleForm')">注册</el-button>
       </div>
     </el-form>
   </div>
@@ -18,28 +26,43 @@
 
 
 <script>
-  import { login } from '../../api/login'
+  import { login, regist } from '../../api/login'
+  import { getToken, setToken } from '../../utils/auth'
 
   export default {
     data() {
-      var checkUsername = (rule, value, callback) => {
+      const checkUsername = (rule, value, callback) => {
         if (!value) {
-          return callback(new Error('学号不能为空'));
+          return callback(new Error('账号不能为空'));
         } else {
           callback();
         }
       };
-      var validatePassword = (rule, value, callback) => {
+      const validatePassword = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请输入密码'));
+        } else {
+          if (this.ruleForm.checkPass !== '') {
+            this.$refs.ruleForm.validateField('checkPass');
+          }
+          callback();
+        }
+      };
+      const validatePassagain = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请再次输入密码'));
+        } else if (value !== this.ruleForm.password) {
+          callback(new Error('两次输入密码不一致!'));
         } else {
           callback();
         }
       };
       return {
+        trigger :true,
         ruleForm: {
           username: '',
-          password: ''
+          password: '',
+          checkPass: ''
         },
         rules: {
           username: [
@@ -47,6 +70,9 @@
           ],
           password: [
             { validator: validatePassword, trigger: 'blur' }
+          ],
+          checkPass: [
+            { validator: validatePassagain, trigger: 'blur' }
           ]
         }
       };
@@ -55,23 +81,68 @@
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            console.log('submit!!');
-            login(formName.username, formName.password)
-            // this.$router.push('/');
+            if(this.trigger) {
+              return login(this.ruleForm.username, this.ruleForm.password).then(
+                response => {
+                  if(response.data.flag) {
+                    return (() => {
+                      this.$message({
+                        message: response.data.message,
+                        type: 'success'
+                      })
+                      //登录验证成功保存token并跳转至首页
+                      setToken(response.data.token)
+                      this.$router.push('/')
+                    })()
+                  }
+                  this.$message({
+                    message: response.data.message,
+                    type: 'warning'
+                  })
+                }
+              )
+            }
+            regist(this.ruleForm.username, this.ruleForm.password).then(
+              response => {
+                if(response.data.flag) {
+                  return (() => {
+                    this.$message({
+                      message: response.data.message,
+                      type: 'success'
+                    })
+                    //注册成功返回登录并清空输入框
+                    this.trigger = !this.trigger
+                    this.resetForm(formName)
+                  })()
+                }
+                this.$message({
+                  message: response.data.message,
+                  type: 'warning'
+                })
+              }
+            )
           } else {
-            console.log('error submit!!');
             return false;
           }
         });
       },
-      regist() {
-        this.$router.push('/regist');
+
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
+      },
+
+      changeTrigger(formName) {
+        this.resetForm(formName)
+        this.trigger = !this.trigger;
       }
     }
   }
 </script>
 
 <style lang="scss" scope>
+h2 b {
+  color: red;
+}
 .login-container {
   position: absolute;
   width: 100%;

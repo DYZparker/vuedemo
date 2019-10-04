@@ -67,7 +67,7 @@
           ],
           checkPass: [
             { validator: validatePassagain, trigger: 'blur' }
-          ],
+          ]
         }
       };
     },
@@ -77,12 +77,22 @@
           if (valid) {
             regist(this.ruleForm.username, this.ruleForm.password).then(
               response => {
-                console.log(response)
+                if (response.data.flag) {
+                  return (() => {
+                    this.$message({
+                      message: response.data.message,
+                      type: 'success'
+                    })
+                    this.$router.push('/login')
+                  })()
+                }
+                this.$message({
+                  message: response.data.message,
+                  type: 'warning'
+                })
               }
             )
-            // this.$router.push('/');
           } else {
-            console.log('error submit!!');
             return false;
           }
         });
@@ -99,12 +109,6 @@
 </script>
 
 <style lang="scss" scope>
-.login-container {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: url('../../assets/imgs/loginbg.jpg') 100% 100%;
-}
 .demo-ruleForm {
   width: 350px;
   border-radius: 15px;
@@ -117,7 +121,4 @@
   text-align: center;
   margin-bottom: 20px;
 }
-// .login-button {
-//   text-align: center;
-// }
 </style>
