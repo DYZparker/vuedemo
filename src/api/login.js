@@ -22,9 +22,9 @@ export function regist(username, password) {
     })
 }
 
-// export function getUserInfo (token){
-//     return request({
-//         url: `/user/info/${token}`,
-//         method: 'get'
-//     })
-// }
+export function getUserInfo (){
+    return request({
+        url: '/user/info',
+        method: 'get'
+    })
+}

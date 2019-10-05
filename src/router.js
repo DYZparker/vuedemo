@@ -27,17 +27,17 @@ export default new Router({
                 {
                     path: '/home',
                     component: Home,
-                    mate: {
+                    meta: {
                         title: '首页',
-                        requireAuth: true
+                        requiresAuth: true
                     }
                 },
                 {
                     path: '/information',
                     component: Information,
-                    mate: {
+                    meta: {
                         title: '学生信息',
-                        requireAuth: true
+                        requiresAuth: true
                     }
                 },
                 {

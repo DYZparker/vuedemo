@@ -13,7 +13,7 @@ export function setToken(token) {
 
 // 获取用户信息
 export function getUser() {
-    return window.localStorage.getItem(USER_KEY)
+    return JSON.parse(window.localStorage.getItem(USER_KEY))
 }
 
 // 保存用户信息

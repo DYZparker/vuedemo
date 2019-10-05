@@ -1,12 +1,12 @@
 import router from './router'
-import { getToken, setToken, getUser, setUser, removeUser } from './utils/auth'
+import { getToken, setUser, removeUser } from './utils/auth'
 import { getUserInfo } from './api/login'
 
 
 router.beforeEach((to, from, next) => {
     //判断跳转页是否需要权限验证
-    if (to.mate.requireAuth) {
-        //如果需要权限，从vuex获取token
+    if (to.meta.requiresAuth) {
+        //如果需要权限，从localStorage获取token
         const token = getToken()
         if(!token) {
             //没有则返回登录页
@@ -14,14 +14,17 @@ router.beforeEach((to, from, next) => {
             next('/login')
         } else {
             //有则请求获取用户信息，改变登录状态
-            getUserInfo(token).then(
+            getUserInfo().then(
                 response => {
-                    //向localStorage和vuex存入用户信息
-                    setUser(response.username)
+                    //向localStorage和vuex更新用户信息
+                    setUser(response.data)
                     next()
-                }
-            )
-
+                }).catch(err => {
+                    //token过期返回登录页
+                    if(err.response.status === 401) {
+                        return next('/login')
+                    }
+                })
         }
     } else {
         next()

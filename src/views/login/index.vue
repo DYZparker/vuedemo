@@ -9,7 +9,7 @@
         <el-input type="password" v-model="ruleForm.password"></el-input>
       </el-form-item>
       <el-form-item label="确认密码" prop="checkPass" v-if="!trigger">
-        <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+        <el-input type="password" v-model="ruleForm.checkPass"></el-input>
       </el-form-item>
       <el-form-item v-if="!trigger">
         <el-button type="primary" @click="submitForm('ruleForm')">注册</el-button>
@@ -26,8 +26,8 @@
 
 
 <script>
-  import { login, regist } from '../../api/login'
-  import { getToken, setToken } from '../../utils/auth'
+  import { login, regist, getUserInfo } from '../../api/login'
+  import { getToken, setToken, removeUser } from '../../utils/auth'
 
   export default {
     data() {
@@ -135,14 +135,30 @@
         this.resetForm(formName)
         this.trigger = !this.trigger;
       }
+    },
+
+    //跳转登录页后给出token过期提示并清空
+    beforeRouteEnter(to, from, next){
+      next(vm => {
+        const token = getToken()
+        if (!token) return false
+        getUserInfo().then(
+          response => {
+          }).catch(err => {
+            if(err.response.status === 401) {
+              removeUser()
+              vm.$message({
+                message: '账号已过期，请重新登录',
+                type: 'warning'
+              })
+            }
+          })
+      })
     }
   }
 </script>
 
 <style lang="scss" scope>
-h2 b {
-  color: red;
-}
 .login-container {
   position: absolute;
   width: 100%;
