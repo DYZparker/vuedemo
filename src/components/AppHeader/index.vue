@@ -32,8 +32,8 @@
 </template>
 
 <script>
-  import { getUser, removeUser } from '../../utils/auth'
-  import { checkPassword, changePassword } from '../../api/password'
+  import { checkPassword, changePassword } from '@/api/password'
+  import { REMOVE_USER } from '@/store/mutation_types'
 
   export default {
     data(){
@@ -94,7 +94,7 @@
             this.handleDialog()
             break;
           case 'b':
-            removeUser()
+            this.$store.commit(REMOVE_USER)
             this.$router.push('/login')
             break;
           default:
@@ -121,7 +121,7 @@
                       type: 'success'
                     })
                     //修改密码成功清除user并跳转至登录页
-                    removeUser()
+                    this.$store.commit(REMOVE_USER)
                     this.$router.push('/login')
                   })()
                 }
@@ -130,7 +130,9 @@
                   type: 'warning'
                 })
               }
-            )
+            ).catch(error => {
+                console.log(error.response.data.message)
+              })
           } else {
             return false;
           }

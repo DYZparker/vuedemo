@@ -1,6 +1,7 @@
 import router from './router'
-import { getToken, setUser, removeUser } from './utils/auth'
-import { getUserInfo } from './api/login'
+import store from './store'
+import { getToken } from './utils/auth'
+import { REMOVE_USER } from '@/store/mutation_types'
 
 
 router.beforeEach((to, from, next) => {
@@ -10,21 +11,15 @@ router.beforeEach((to, from, next) => {
         const token = getToken()
         if(!token) {
             //没有则返回登录页
-            removeUser()
+            store.commit(REMOVE_USER)
             next('/login')
         } else {
-            //有则请求获取用户信息，改变登录状态
-            getUserInfo().then(
-                response => {
-                    //向localStorage和vuex更新用户信息
-                    setUser(response.data)
-                    next()
-                }).catch(err => {
-                    //token过期返回登录页
-                    if(err.response.status === 401) {
-                        return next('/login')
-                    }
-                })
+            //token过期返回登录页
+            store.dispatch('GetUserInfo').then(response => {
+                if(response.status === 200) next()
+            }).catch(error => {
+                if(error) next('/login')
+            })
         }
     } else {
         next()

@@ -26,8 +26,8 @@
 
 
 <script>
-  import { login, regist, getUserInfo } from '../../api/login'
-  import { getToken, setToken, removeUser } from '../../utils/auth'
+  import { login, regist, getUserInfo } from '@/api/login'
+  import { getToken, setToken, setUser, removeUser } from '@/utils/auth'
 
   export default {
     data() {
@@ -82,25 +82,25 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             if(this.trigger) {
-              return login(this.ruleForm.username, this.ruleForm.password).then(
+              return this.$store.dispatch('Login', this.ruleForm).then(
                 response => {
-                  if(response.data.flag) {
+                  if(response.err_code === 0) {
                     return (() => {
                       this.$message({
-                        message: response.data.message,
+                        message: response.message,
                         type: 'success'
                       })
-                      //登录验证成功保存token并跳转至首页
-                      setToken(response.data.token)
                       this.$router.push('/')
-                    })()
+                    })();
                   }
                   this.$message({
-                    message: response.data.message,
+                    message: response.message,
                     type: 'warning'
                   })
                 }
-              )
+              ).catch(error => {
+                console.log(error.response.data.message)
+              })
             }
             regist(this.ruleForm.username, this.ruleForm.password).then(
               response => {
@@ -120,7 +120,9 @@
                   type: 'warning'
                 })
               }
-            )
+            ).catch(error => {
+                console.log(error.response.data.message)
+              })
           } else {
             return false;
           }
@@ -135,25 +137,6 @@
         this.resetForm(formName)
         this.trigger = !this.trigger;
       }
-    },
-
-    //跳转登录页后给出token过期提示并清空
-    beforeRouteEnter(to, from, next){
-      next(vm => {
-        const token = getToken()
-        if (!token) return false
-        getUserInfo().then(
-          response => {
-          }).catch(err => {
-            if(err.response.status === 401) {
-              removeUser()
-              vm.$message({
-                message: '账号已过期，请重新登录',
-                type: 'warning'
-              })
-            }
-          })
-      })
     }
   }
 </script>
