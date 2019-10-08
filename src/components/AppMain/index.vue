@@ -1,22 +1,19 @@
 <template>
   <div class="main">
-    <router-view></router-view>
+    <transition name='component-fade' mode='out-in'>
+      <router-view></router-view>
+    </transition>
   </div>
 </template>
 
 <script>
-// import Home from '../../views/home'
-// import Information from '../../views/information'
-// import Achievement from '../../views/achievement'
-
-// export default {
-//   components: {
-//     Home,
-//     Information,
-//     Achievement
-//   }
-// }
 </script>
 
 <style lang="scss" scope>
+.component-fade-enter-active, .component-fade-leave-active {
+  transition: opacity .3s ease;
+}
+.component-fade-enter, .component-fade-leave-to {
+  opacity: 0;
+}
 </style>
