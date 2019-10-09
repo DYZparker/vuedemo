@@ -1,11 +1,12 @@
-import { setToken, setUser, removeUser } from '@/utils/auth'
+import { getToken, setToken, getUser, setUser, removeUser } from '@/utils/auth'
 import { login, getUserInfo} from '@/api/login'
 import { SET_TOKEN, SET_USER, REMOVE_USER } from '../mutation_types'
 
 const user = {
     state: {
-        token: '',
-        user: ''
+        //避免刷新页面丢失值
+        token: getToken(),
+        user: getUser()
     },
 
     mutations: {

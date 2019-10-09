@@ -3,7 +3,7 @@
     <a href="/">学生管理系统</a>
     <el-dropdown @command="handleCommand">
       <span class="el-dropdown-link">
-        {{user.username}} 登陆成功<i class="el-icon-arrow-down el-icon--right"></i>
+        {{user}} 登陆成功<i class="el-icon-arrow-down el-icon--right"></i>
       </span>
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item command="a">修改密码</el-dropdown-item>
@@ -66,7 +66,7 @@
         }
       };
       return {
-        user: this.$store.state.user.user,
+        user: '11',
         dialogFormVisible: false,
         ruleForm: {
           oldPass: '',
@@ -138,6 +138,10 @@
           }
         });
       }
+    },
+
+    created() {
+      this.user = this.$store.state.user.user.username
     }
   }
 </script>

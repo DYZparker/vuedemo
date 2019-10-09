@@ -1,14 +1,5 @@
 <template>
   <div>
-    <div class="breadcrumb">
-      <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>活动管理</el-breadcrumb-item>
-        <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-        <el-breadcrumb-item>活动详情</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
-
     <el-form :inline="true" :model="formInline" class="demo-form-inline">
       <el-form-item>
         <el-input v-model="formInline.user" placeholder="学号"></el-input>
@@ -17,9 +8,9 @@
         <el-input v-model="formInline.user" placeholder="姓名"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-select v-model="formInline.region" placeholder="活动区域">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+        <el-select v-model="formInline.region" placeholder="性别">
+          <el-option label="男" value="boy"></el-option>
+          <el-option label="女" value="girl"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -40,21 +31,18 @@
       :data="tableData"
       height="500"
       border
-      style="width: 100%">
-      <el-table-column
-        prop="date"
-        label="日期"
-        width="180">
-      </el-table-column>
-      <el-table-column
-        prop="name"
-        label="姓名"
-        width="180">
-      </el-table-column>
-      <el-table-column
-        prop="address"
-        label="地址">
-      </el-table-column>
+      style="width: 100%"
+      :cell-style="cellStyle"
+      :header-cell-style="rowClass">
+      <el-table-column type="index" label="序号" width="60"></el-table-column>
+      <el-table-column prop="studentID" label="学号" width="100"></el-table-column>
+      <el-table-column prop="name" label="姓名" width="100"></el-table-column>
+      <el-table-column prop="birthday" label="生日" width="120"></el-table-column>
+      <el-table-column prop="gender" label="性别" :formatter="ftGender" width="60"></el-table-column>
+      <el-table-column prop="height" label="身高（cm）" width="100"></el-table-column>
+      <el-table-column prop="weight" label="体重（kg）" width="100"></el-table-column>
+      <el-table-column prop="hobbies" label="爱好" width="180"></el-table-column>
+      <el-table-column prop="address" label="地址" width="220"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
@@ -72,10 +60,10 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="currentPage"
-      :page-sizes="[10, 20, 30, 40]"
-      :page-size="100"
+      :page-sizes="[10, 20, 50, 100]"
+      :page-size="currentSize"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="400"
+      :total="totalList"
       class="pagination">
     </el-pagination>
   </div>
@@ -90,38 +78,13 @@
           region: ''
         },
         dateValue: '',
-        currentPage: 5,
-        tableData: [{
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-08',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-06',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-07',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }]
+        totalList: null,
+        currentPage: 1,
+        currentSize: 10,
+        tableData: []
       }
     },
+
     methods: {
       handleEdit(index, row) {
         console.log(index, row);
@@ -132,19 +95,42 @@
       onSubmit() {
         console.log('submit!');
       },
+      refreshList() {
+        this.$store.dispatch('GetStudentList', {page: this.currentPage, size: this.currentSize}).then(response => {
+          const res = response.data
+          this.tableData = res.student
+          this.totalList = res.total
+        })
+      },
       handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
+        this.currentSize = val
+        this.refreshList()
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+        this.currentPage = val
+        this.refreshList()
+      },
+      ftGender(row) {
+        const Gender = row.gender ? '男' : '女'
+        return Gender
+      },
+      cellStyle({row, column, rowIndex, columnIndex}) {
+        return "text-align:center"
+      },
+      rowClass({row, rowIndex}) {
+        return "text-align:center"
       }
+    },
+
+    created() {
+      this.refreshList()
     }
   }
 </script>
 
 <style lang="scss" scope>
-.breadcrumb {
-  padding: 15px;
+.demo-form-inline {
+  padding: 20px 20px 0 20px;
   margin-bottom: 20px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
