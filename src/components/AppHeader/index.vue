@@ -66,7 +66,7 @@
         }
       };
       return {
-        user: '11',
+        user: '',
         dialogFormVisible: false,
         ruleForm: {
           oldPass: '',
